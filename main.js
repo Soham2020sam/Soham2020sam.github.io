@@ -1,11 +1,11 @@
-/** glsl source code for simplest possible vertex shader */
+// more complete example here: https://github.com/bandaloo/simple-fragment-shader
+
 const VERTEX_SHADER_SRC = `#version 300 es
 in vec2 aPosition;
 void main() {
   gl_Position = vec4(aPosition, 0.0, 1.0);
 }`;
 
-/** fragment shader adapted from shadertoy */
 const FRAGMENT_SHADER_SRC = `#version 300 es
 precision mediump float;
 out vec4 fragColor;
@@ -14,7 +14,8 @@ uniform vec2 uResolution;
 void main(){
   vec2 uv = gl_FragCoord.xy / uResolution.xy;
   vec3 col = 0.5 + 0.5*cos(uTime+uv.xyx+vec3(0,2,4));
-  fragColor = vec4(col,1.0);
+  fragColor = vec4(col, 1.0);
+  fragColor = vec4(1, 0, 0, 1);
 }`;
 
 const RES_WIDTH = 1920;
@@ -23,16 +24,7 @@ const RES_HEIGHT = 1080;
 const canvas = /** @type {HTMLCanvasElement} */ (document.getElementById("gl"));
 const gl = canvas.getContext("webgl2");
 
-if(gl == null) throw new Error("gl was null!")
-
-/** helper function to log shader compilation errors */
-const shaderLog = (
-  /** @type {string} */ name,
-  /** @type {WebGLShader} */ shader
-) => {
-  const output = gl.getShaderInfoLog(shader);
-  if (output !== "") console.log(`${name} shader info log\n${output}`);
-};
+if (gl === null) throw new Error("gl was null!");
 
 canvas.width = RES_WIDTH;
 canvas.height = RES_HEIGHT;
@@ -49,17 +41,20 @@ const triangles = new Float32Array(verts);
 gl.bufferData(gl.ARRAY_BUFFER, triangles, gl.STATIC_DRAW);
 
 const vertexShader = gl.createShader(gl.VERTEX_SHADER);
+if (vertexShader === null) throw new Error("vertex shader was null!");
+
 gl.shaderSource(vertexShader, VERTEX_SHADER_SRC);
 gl.compileShader(vertexShader);
-shaderLog("vertex", vertexShader);
 
 const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+if (fragmentShader === null) throw new Error("fragment shader was null!");
+
 gl.shaderSource(fragmentShader, FRAGMENT_SHADER_SRC);
 gl.compileShader(fragmentShader);
-shaderLog("fragment", fragmentShader);
 
-// create shader program
 const program = gl.createProgram();
+if (program === null) throw new Error("program was null!");
+
 gl.attachShader(program, vertexShader);
 gl.attachShader(program, fragmentShader);
 gl.linkProgram(program);
@@ -76,11 +71,9 @@ gl.enableVertexAttribArray(position);
 
 gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
 
-const render = (/** @type {number} */ time) => {
+const render = (time) => {
   gl.uniform1f(uTime, time / 1000);
-
   gl.drawArrays(gl.TRIANGLES, 0, 6);
-
   requestAnimationFrame(render);
 };
 
