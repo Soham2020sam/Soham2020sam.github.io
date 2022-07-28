@@ -81,7 +81,34 @@ body {
   transition: margin-left .5s;
   padding: 20px;
 }
+.sidenav {
+  width: 200px;
+  position: fixed;
+  z-index: 1;
+  top: 0px;
+  left: 0px;
+  background: rgb(25, 163, 212);
+  overflow-x: hidden;
+  padding: 0px 0;
+}
 
+.sidenav a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #ffffff;
+  display: block;
+}
+
+.sidenav a:hover {
+  color: #ffffff;
+}
+
+.main {
+  margin-left: 140px; /* Same width as the sidebar + left position in px */
+  font-size: 28px; /* Increased text to enable scrolling */
+  padding: 0px 10px;
+}
 /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
 @media screen and (max-height: 450px) {
   .sidenav {padding-top: 15px;}
